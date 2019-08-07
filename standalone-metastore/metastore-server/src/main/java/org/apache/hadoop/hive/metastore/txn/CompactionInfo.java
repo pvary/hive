@@ -47,6 +47,7 @@ public class CompactionInfo implements Comparable<CompactionInfo> {
   public CompactionType type;
   public String workerId;
   public long start;
+  public long end;
   public String runAs;
   public String properties;
   public boolean tooManyAborts = false;

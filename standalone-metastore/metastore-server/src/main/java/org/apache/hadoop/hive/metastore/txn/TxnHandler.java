@@ -1472,7 +1472,7 @@ abstract class TxnHandler implements TxnStore, TxnStore.MutexAPI {
     }
   }
 
-  private List<Long> getAbortedWriteIds(ValidWriteIdList validWriteIdList) {
+  protected static List<Long> getAbortedWriteIds(ValidWriteIdList validWriteIdList) {
     List<Long> abortedWriteIds = new ArrayList<>();
     for (long writeId : validWriteIdList.getInvalidWriteIds()) {
       if (validWriteIdList.isWriteIdAborted(writeId)) {
@@ -1877,7 +1877,7 @@ abstract class TxnHandler implements TxnStore, TxnStore.MutexAPI {
         // The initial value for write id should be 1 and hence we add 1 with number of write ids
         // allocated here
         String s = "insert into NEXT_WRITE_ID (nwi_database, nwi_table, nwi_next) values (?, ?, "
-                + Long.toString(rqst.getSeeWriteId() + 1) + ")";
+                + Long.toString(rqst.getSeedWriteId() + 1) + ")";
         pst = sqlGenerator.prepareStmtWithParameters(dbConn, s, Arrays.asList(rqst.getDbName(), rqst.getTblName()));
         LOG.debug("Going to execute insert <" + s.replaceAll("\\?", "{}") + ">",
                 quoteString(rqst.getDbName()), quoteString(rqst.getTblName()));
@@ -2018,7 +2018,7 @@ abstract class TxnHandler implements TxnStore, TxnStore.MutexAPI {
       List<String> params = new ArrayList<>();
       StringBuilder query = new StringBuilder();
       // compose a query that select transactions containing an update...
-      query.append("select ctc_update_delete from COMPLETED_TXN_COMPONENTS where ctc_update_delete='Y' AND (");
+      query.append("select ctc_update_delete from checkQFileTestHack where ctc_update_delete='Y' AND (");
       int i = 0;
       for (String fullyQualifiedName : creationMetadata.getTablesUsed()) {
         // ...for each of the tables that are part of the materialized view,
@@ -3172,7 +3172,7 @@ abstract class TxnHandler implements TxnStore, TxnStore.MutexAPI {
     }
   }
 
-  private static void shouldNeverHappen(long txnid) {
+  protected static void shouldNeverHappen(long txnid) {
     throw new RuntimeException("This should never happen: " + JavaUtils.txnIdToString(txnid));
   }
   private static void shouldNeverHappen(long txnid, long extLockId, long intLockId) {
@@ -4736,7 +4736,7 @@ abstract class TxnHandler implements TxnStore, TxnStore.MutexAPI {
    * Used to raise an informative error when the caller expected a txn in a particular TxnStatus
    * but found it in some other status
    */
-  private static void raiseTxnUnexpectedState(TxnStatus actualStatus, long txnid) 
+  protected static void raiseTxnUnexpectedState(TxnStatus actualStatus, long txnid)
     throws NoSuchTxnException, TxnAbortedException {
     switch (actualStatus) {
       case ABORTED:

@@ -20,14 +20,14 @@ package org.apache.hadoop.hive.metastore.api;
 public class InitializeTableWriteIdsRequest {
   private final String dbName;
   private final String tblName;
-  private final long seeWriteId;
-  public InitializeTableWriteIdsRequest(String dbName, String tblName, long seeWriteId) {
+  private final long seedWriteId;
+  public InitializeTableWriteIdsRequest(String dbName, String tblName, long seedWriteId) {
     assert dbName != null;
     assert tblName != null;
-    assert seeWriteId > 1;
+    assert seedWriteId > 1;
     this.dbName = dbName;
     this.tblName = tblName;
-    this.seeWriteId = seeWriteId;
+    this.seedWriteId = seedWriteId;
   }
   public String getDbName() {
     return dbName;
@@ -36,7 +36,7 @@ public class InitializeTableWriteIdsRequest {
     return tblName;
   }
 
-  public long getSeeWriteId() {
-    return seeWriteId;
+  public long getSeedWriteId() {
+    return seedWriteId;
   }
 }
